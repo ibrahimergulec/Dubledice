@@ -12,7 +12,7 @@ Mobil ve masaüstü cihazlarla tam uyumlu, WebGL ve **Three.js** kullanılarak g
 ## 📸 Ekran Görüntüsü
 
 <div align="center">
-  <img src="https://via.placeholder.com/400x700.png?text=App+Preview" alt="Mobil 3D Zar Ekran Görüntüsü" width="320"/>
+  <img src="zar.jpeg" alt="Mobil 3D Zar Ekran Görüntüsü" width="320"/>
 </div>
 
 ---
