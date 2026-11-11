@@ -57,3 +57,4 @@ Proje tek bir HTML dosyası üzerinde çalışacak şekilde yapılandırılmış
 .
 ├── index.html        # Tüm HTML, CSS ve JavaScript (Three.js) mantığını barındıran ana dosya
 └── README.md         # Proje dokümantasyonu
+└── zar.png           # Proje görseli
