@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#101827">
+<title>Çift Alan Zar 3D</title>
+<style>
+:root{--bg:#101827;--panel:#182438;--line:#42a5ff;--ink:#f4f7ff;--muted:#aab7ca;--gold:#ffd166}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);touch-action:manipulation}
+body{display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+header{height:58px;flex:0 0 58px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:#101827;z-index:10}
+.brand{font-size:14px;font-weight:800;letter-spacing:2px;color:#dce8fa}
+.tools{display:flex;gap:8px}
+.tool{border:1px solid #34445d;background:#1b2a40;color:#eaf2ff;border-radius:12px;padding:9px 11px;font-size:12px;cursor:pointer}
+main{flex:1;min-height:0;display:flex;flex-direction:column}
+.zone{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;overflow:hidden;user-select:none;-webkit-user-select:none;cursor:pointer;background:radial-gradient(ellipse at 50% 45%,#243751 0%,#17253a 52%,#111b2b 100%);perspective:800px}
+.zone.lower{background:radial-gradient(ellipse at 50% 45%,#24364d 0%,#18263a 52%,#111b2b 100%)}
+.zone:active{filter:brightness(1.08)}
+.zone-label{font-size:11px;font-weight:800;letter-spacing:3px;color:#a9bdd7;text-transform:uppercase}
+
+.die-wrapper {
+  perspective: 600px;
+    display: flex;
+      align-items: center;
+        justify-content: center;
+        }
+        .die{
+          width:min(34vw,140px);
+            height:min(34vw,140px);
+              min-width:100px;
+                min-height:100px;
+                  max-width:140px;
+                    max-height:140px;
+                      border-radius:24px;
+                        background:linear-gradient(145deg,#ffffff,#dce6f2);
+                          box-shadow:0 20px 30px rgba(0, 0, 0, 0.4), inset 0 2px 4px #ffffff;
+                            display:grid;
+                              grid-template:repeat(3,1fr)/repeat(3,1fr);
+                                padding:16px;
+                                  gap:4px;
+                                    transform-style: preserve-3d;
+                                      transform: rotateX(10deg) rotateY(-15deg) rotateZ(-3deg);
+                                        will-change: transform;
+                                        }
+
+                                        .die.rolling {
+                                          animation: roll3d 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+                                          }
+
+                                          @keyframes roll3d {
+                                            0% {
+                                                transform: translateZ(0) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(0.9);
+                                                    box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+                                                      }
+                                                        30% {
+                                                            transform: translateZ(60px) rotateX(360deg) rotateY(180deg) rotateZ(90deg) scale(1.15);
+                                                                box-shadow: 0 40px 50px rgba(0,0,0,0.6);
+                                                                  }
+                                                                    70% {
+                                                                        transform: translateZ(20px) rotateX(720deg) rotateY(540deg) rotateZ(270deg) scale(0.95);
+                                                                            box-shadow: 0 15px 20px rgba(0,0,0,0.4);
+                                                                              }
+                                                                                100% {
+                                                                                    transform: translateZ(0) rotateX(1080deg) rotateY(720deg) rotateZ(357deg) scale(1);
+                                                                                        box-shadow: 0 20px 30px rgba(0, 0, 0, 0.4);
+                                                                                          }
+                                                                                          }
+
+                                                                                          .dot{border-radius:50%;background:transparent;align-self:center;justify-self:center;width:100%;height:100%;max-width:22px;max-height:22px}
+                                                                                          .dot.on{background:radial-gradient(circle at 35% 30%,#42536c,#17243a);box-shadow:inset 0 2px 3px #0005,0 1px 1px #fff8}
+                                                                                          .result{font-size:clamp(34px,8vw,52px);line-height:1;font-weight:900;color:white;text-shadow:0 4px 14px #0006}
+                                                                                          .hint{font-size:12px;color:#9fb1c8;letter-spacing:.4px}
+                                                                                          .separator{height:4px;flex:0 0 4px;background:linear-gradient(90deg,#278de9,#80c7ff,#278de9);box-shadow:0 0 14px #42a5ff99;z-index:5}
+                                                                                          footer{height:38px;flex:0 0 38px;display:flex;align-items:center;justify-content:center;color:#8295ae;font-size:10px;letter-spacing:1px;background:#101827}
+                                                                                          @media (orientation:landscape){header{height:42px;flex-basis:42px}.zone{flex-direction:row}.zone-label{writing-mode:vertical-rl}.die{width:min(23vh,120px);height:min(23vh,120px)}footer{height:25px;flex-basis:25px}}
+                                                                                          </style>
+                                                                                          </head>
+                                                                                          <body>
+                                                                                          <header>
+                                                                                            <div class="brand">DOUBLE DICE <span style="color:#42a5ff">●</span></div>
+                                                                                              <div class="tools">
+                                                                                                  <button class="tool" id="soundBtn" type="button">♫ Ses: Kapalı</button>
+                                                                                                      <button class="tool" id="fullBtn" type="button">⛶ Tam ekran</button>
+                                                                                                        </div>
+                                                                                                        </header>
+                                                                                                        <main>
+                                                                                                          <section class="zone upper" data-zone="0" aria-label="Üst zar alanı">
+                                                                                                              <div class="zone-label">ÜST ALAN</div>
+                                                                                                                  <div class="die-wrapper">
+                                                                                                                        <div class="die" id="die0" aria-label="Zar sonucu 1"></div>
+                                                                                                                            </div>
+                                                                                                                                <div class="result" id="result0">1</div>
+                                                                                                                                    <div class="hint">Atmak için dokun</div>
+                                                                                                                                      </section>
+                                                                                                                                        <div class="separator"></div>
+                                                                                                                                          <section class="zone lower" data-zone="1" aria-label="Alt zar alanı">
+                                                                                                                                              <div class="zone-label">ALT ALAN</div>
+                                                                                                                                                  <div class="die-wrapper">
+                                                                                                                                                        <div class="die" id="die1" aria-label="Zar sonucu 5"></div>
+                                                                                                                                                            </div>
+                                                                                                                                                                <div class="result" id="result1">5</div>
+                                                                                                                                                                    <div class="hint">Atmak için dokun</div>
+                                                                                                                                                                      </section>
+                                                                                                                                                                      </main>
+                                                                                                                                                                      <footer>EKRANA DOKUN · ZARINI AT</footer>
+                                                                                                                                                                      <script>
+                                                                                                                                                                      const layouts={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+                                                                                                                                                                      let values=[1,5],soundOn=false,audioCtx=null;
+
+                                                                                                                                                                      function draw(index,value){
+                                                                                                                                                                       const die=document.getElementById('die'+index);
+                                                                                                                                                                        die.innerHTML='';
+                                                                                                                                                                         for(let i=0;i<9;i++){
+                                                                                                                                                                            const dot=document.createElement('span');
+                                                                                                                                                                               dot.className='dot'+(layouts[value].includes(i)?' on':'');
+                                                                                                                                                                                  die.appendChild(dot);
+                                                                                                                                                                                   }
+                                                                                                                                                                                    document.getElementById('result'+index).textContent=value;
+                                                                                                                                                                                     die.setAttribute('aria-label','Zar sonucu '+value);
+                                                                                                                                                                                     }
+
+                                                                                                                                                                                     function tone(){
+                                                                                                                                                                                      if(!soundOn)return;
+                                                                                                                                                                                       try{
+                                                                                                                                                                                          audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();
+                                                                                                                                                                                             const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+                                                                                                                                                                                                osc.type='sine';
+                                                                                                                                                                                                   osc.frequency.setValueAtTime(600,audioCtx.currentTime);
+                                                                                                                                                                                                      osc.frequency.exponentialRampToValueAtTime(150,audioCtx.currentTime+.15);
+                                                                                                                                                                                                         gain.gain.setValueAtTime(.08,audioCtx.currentTime);
+                                                                                                                                                                                                            gain.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+.15);
+                                                                                                                                                                                                               osc.connect(gain);gain.connect(audioCtx.destination);
+                                                                                                                                                                                                                  osc.start();osc.stop(audioCtx.currentTime+.16);
+                                                                                                                                                                                                                   }catch(e){}
+                                                                                                                                                                                                                   }
+
+                                                                                                                                                                                                                   function roll(index){
+                                                                                                                                                                                                                    const die=document.getElementById('die'+index);
+                                                                                                                                                                                                                     die.classList.remove('rolling');
+                                                                                                                                                                                                                      void die.offsetWidth;
+                                                                                                                                                                                                                       die.classList.add('rolling');
+
+                                                                                                                                                                                                                        const rollInterval = setInterval(() => {
+                                                                                                                                                                                                                           const tempVal = Math.floor(Math.random()*6)+1;
+                                                                                                                                                                                                                              draw(index, tempVal);
+                                                                                                                                                                                                                               }, 60);
+
+                                                                                                                                                                                                                                setTimeout(() => {
+                                                                                                                                                                                                                                   clearInterval(rollInterval);
+                                                                                                                                                                                                                                      const finalValue=Math.floor(Math.random()*6)+1;
+                                                                                                                                                                                                                                         values[index]=finalValue;
+                                                                                                                                                                                                                                            draw(index,finalValue);
+                                                                                                                                                                                                                                               tone();
+                                                                                                                                                                                                                                                  if(navigator.vibrate)navigator.vibrate(30);
+                                                                                                                                                                                                                                                   }, 500);
+                                                                                                                                                                                                                                                   }
+
+                                                                                                                                                                                                                                                   document.querySelectorAll('.zone').forEach(zone=>zone.addEventListener('pointerdown',e=>{
+                                                                                                                                                                                                                                                    e.preventDefault();
+                                                                                                                                                                                                                                                     roll(Number(zone.dataset.zone));
+                                                                                                                                                                                                                                                     }));
+
+                                                                                                                                                                                                                                                     document.getElementById('fullBtn').addEventListener('click',async()=>{
+                                                                                                                                                                                                                                                      try{if(!documentfullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch(e){}
+                                                                                                                                                                                                                                                      });
+
+                                                                                                                                                                                                                                                      document.getElementById('soundBtn').addEventListener('click',()=>{
+                                                                                                                                                                                                                                                       soundOn=!soundOn;
+                                                                                                                                                                                                                                                        document.getElementById('soundBtn').textContent=soundOn?'♫ Ses: Açık':'♫ Ses: Kapalı';
+                                                                                                                                                                                                                                                         tone();
+                                                                                                                                                                                                                                                         });
+
+                                                                                                                                                                                                                                                         draw(0,values[0]);
+                                                                                                                                                                                                                                                         draw(1,values[1]);
+                                                                                                                                                                                                                                                         </script>
+                                                                                                                                                                                                                                                         </body>
+                                                                                                                                                                                                                                                         </html>
+                                                                                                                                                                                                                                                         
